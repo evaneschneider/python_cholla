@@ -13,7 +13,7 @@ v_c = l_c / t_c
 p_c = d_c * v_c * v_c
 kb = 1.380658e-16     # k_boltzmann in ergs/K
 m_c = d_c * l_c * l_c * l_c / 1.9891e33 # characteristic mass in solar masses
-P_init = 4.232212e-13
+P_init = 2.744870e-12
 
 f = open('heat_eq_cool.txt', 'r')
 lines = f.readlines()
@@ -32,9 +32,10 @@ Teq = np.array(Teq)
 T_a = P_init / (pow(10,neq)*kb)
 T_a = np.log10(T_a)
 
-dname='sphere_wind/n1/'
+dname='sphere_wind/n01/'
 istart=0
-iend=300
+iend=100
+scale=5
 for i in range(istart,iend+1):
 
   f = h5py.File(dname+'hdf5/'+str(i)+'.h5', 'r')
@@ -43,12 +44,12 @@ for i in range(istart,iend+1):
   nx = head['dims'][0]
   ny = head['dims'][1]
   nz = head['dims'][2]
-  d  = np.array(f['density'])
-  mx = np.array(f['momentum_x'])
-  my = np.array(f['momentum_y'])
-  mz = np.array(f['momentum_z'])
-  E  = np.array(f['Energy'])
-  GE = np.array(f['GasEnergy'])
+  d  = np.array(f['density']).astype(float)
+  mx = np.array(f['momentum_x']).astype(float)
+  my = np.array(f['momentum_y']).astype(float)
+  mz = np.array(f['momentum_z']).astype(float)
+  E  = np.array(f['Energy']).astype(float)
+  GE = np.array(f['GasEnergy']).astype(float)
   vx = mx/d
   vy = my/d
   vz = mz/d
@@ -73,7 +74,7 @@ for i in range(istart,iend+1):
   plt.plot(neq, T_a, color='black')
   plt.xlabel('$log_{10}(n)$ [$cm^{-3}$]')
   plt.ylabel('$log_{10}(T)$ [K]')
-  plt.text(1,7.5,str(10*i)+' kyr')
+  plt.text(1,7.5,str(scale*i)+' kyr')
   fig1.savefig(dname+'phase_diagrams/'+'nT_'+str(i)+'.png')
   plt.close(fig1)
 
@@ -82,8 +83,8 @@ for i in range(istart,iend+1):
   plt.colorbar()
   plt.xlabel('$log_{10}(n)$ [$cm^{-3}$]')
   plt.ylabel('$v$ [km $s^{-1}$]')
-  plt.text(1,1300,str(10*i)+' kyr')
-  fig2.savefig(dname+'phase_diagrams/'+'vT_'+str(i)+'.png')
+  plt.text(1,1300,str(scale*i)+' kyr')
+  fig2.savefig(dname+'phase_diagrams/'+'nv_'+str(i)+'.png')
   plt.close(fig2)
 
   fig3 = plt.figure()
@@ -98,7 +99,7 @@ for i in range(istart,iend+1):
   plt.colorbar(label='v [km $s^{-1}$]')
   plt.xlabel('$log_{10}(n)$ [$cm^{-3}$]')
   plt.ylabel('$log_{10}(T)$ [K]')
-  plt.text(1,7.5,str(10*i)+' kyr')
+  plt.text(1,7.5,str(scale*i)+' kyr')
   fig3.savefig(dname+'phase_diagrams/'+'nvT_'+str(i)+'.png')
   plt.close(fig3)
 
